@@ -96,6 +96,13 @@ h1 .logo{width:32px;height:32px;border-radius:10px;background:var(--green);displ
 .flow .cg{min-width:0;background:rgba(var(--t),.16);border:1px solid rgba(var(--t),.4);border-radius:16px;padding:6px}
 .flow .cg .grp{margin:1px 4px 6px;font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .flow .cg .tiles{grid-template-columns:repeat(var(--n),1fr);gap:6px}
+.cells{display:grid;grid-template-columns:repeat(3,1fr);margin:6px -4px 0}
+.cell{position:relative;display:flex;flex-direction:column;padding:6px}
+.cell.lab{padding-top:28px}
+.cell::before{content:"";position:absolute;top:var(--it);right:var(--ir);bottom:var(--ib);left:var(--il);background:rgba(var(--t),.22);border-radius:var(--r)}
+.cell>*{position:relative}
+.cell .tile{flex:1}
+.cell .clab{position:absolute;top:9px;left:11px;right:6px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
 .listpanel .phead{font-size:18px;font-weight:800;margin:12px 2px 4px;color:var(--ink)}
 .listpanel .empty-note{padding:8px 2px 4px}
 .offhead{font-size:18px;font-weight:800;margin:0 2px 2px}
@@ -443,17 +450,24 @@ function renderShop(){
   if(on.length || !q){
     const panel=document.createElement("div"); panel.className="listpanel";
     const ph=document.createElement("div"); ph.className="phead"; ph.textContent="Op de lijst"+(on.length?" ("+on.length+")":""); panel.append(ph);
-    const groups=[];
-    on.forEach(it=>{ const c=(CAT[it.category]||CAT.overig); const g=groups[groups.length-1]; if(g && g.c.id===c.id) g.items.push(it); else groups.push({c,items:[it]}); });
-    if(groups.length){
-      const flow=document.createElement("div"); flow.className="flow";
-      groups.forEach(g=>{
-        const n=Math.min(g.items.length,3);
-        const cg=document.createElement("div"); cg.className="cg"; cg.style.gridColumn="span "+n; cg.style.setProperty("--n",n); cg.style.setProperty("--t",TINT[g.c.id]||TINT.overig);
-        cg.append(h(g.c.e+" "+g.c.n), grid(g.items.map(it=>tileEl(it))));
-        flow.append(cg);
+    if(on.length){
+      const cats=on.map(it=>CAT[it.category]?it.category:"overig"), n=on.length, G="4px", R="14px";
+      const first=i=>i===0||cats[i-1]!==cats[i]||(i%3===0&&!(i>=3&&cats[i-3]===cats[i]));
+      const rowLab=r=>[0,1,2].some(c=>{const i=r*3+c; return i<n && first(i);});
+      const wrap=document.createElement("div"); wrap.className="cells";
+      on.forEach((it,i)=>{
+        const c=i%3, r=Math.floor(i/3), k=cats[i];
+        const L=c>0&&cats[i-1]===k, Rt=c<2&&i+1<n&&cats[i+1]===k, U=i>=3&&cats[i-3]===k, D=i+3<n&&cats[i+3]===k;
+        const cell=document.createElement("div"); cell.className="cell"+(rowLab(r)?" lab":"");
+        cell.style.setProperty("--t",TINT[k]);
+        cell.style.setProperty("--il",L?"0":G); cell.style.setProperty("--ir",Rt?"0":G);
+        cell.style.setProperty("--it",U?"0":G); cell.style.setProperty("--ib",D?"0":G);
+        cell.style.setProperty("--r",[(!U&&!L)?R:"0",(!U&&!Rt)?R:"0",(!D&&!Rt)?R:"0",(!D&&!L)?R:"0"].join(" "));
+        if(first(i)){ const lb=document.createElement("div"); lb.className="clab"; lb.textContent=CAT[k].e+" "+CAT[k].n; cell.append(lb); }
+        cell.append(tileEl(it));
+        wrap.append(cell);
       });
-      panel.append(flow);
+      panel.append(wrap);
     }
     if(!on.length){ const p=document.createElement("p"); p.className="empty-note"; p.textContent="De lijst is leeg. Typ hierboven wat er gehaald moet worden."; panel.append(p); }
     shopEl.append(panel);
