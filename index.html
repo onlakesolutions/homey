@@ -409,7 +409,7 @@ function h(t){ const d=document.createElement("div"); d.className="grp"; d.textC
 const STORES={ah:{n:"Albert Heijn",short:"AH"}, dirk:{n:"Dirk",short:"Dirk"}};
 // Schapvolgorde per winkel: vullen we later in. Nu nog de standaardvolgorde.
 const STORE_ORDER={ah:["fruit","groente","vlees","brood","kaas","zuivel","houdbaar","kruiden","koffie","ontbijt","snacks","nonfood","snackszout","drinken","diepvries","overig"], dirk:["houdbaar","nonfood","brood","koffie","ontbijt","snacks","zuivel","groente","fruit","kaas","vlees","kruiden","snackszout","drinken","diepvries","overig"]};
-let store=null; try{ store=STORES[localStorage.getItem("homey-store")]?localStorage.getItem("homey-store"):null; }catch(e){}
+let store="dirk"; try{ const st=localStorage.getItem("homey-store"); if(STORES[st]) store=st; }catch(e){}
 let wakeLock=null;
 function catIndex(cat, st){ const order=st&&STORE_ORDER[st]; const c=CAT[cat]?cat:"overig"; if(order){ const i=order.indexOf(c); return i<0?999:i; } return CAT[c].i; }
 function setStore(st){
@@ -422,7 +422,7 @@ function renderBar(){
   const seg=document.createElement("div"); seg.className="seg"; const lab=document.createElement("span"); lab.className="lab"; lab.textContent="Sorteer op"; seg.append(lab); seg.setAttribute("role","group"); seg.setAttribute("aria-label","Sorteer op winkel");
   [["dirk","Dirk"],["ah","Albert Heijn"]].forEach(([id,label])=>{
     const b=document.createElement("button"); b.className=id; b.textContent=label; b.setAttribute("aria-pressed",store===id);
-    b.onclick=()=>setStore(store===id?null:id); seg.append(b);
+    b.onclick=()=>setStore(id); seg.append(b);
   });
   if(store==="ah"){ const c=document.createElement("button"); c.className="card"; c.textContent="Bonuskaart"; c.onclick=openBonus; seg.append(c); }
   bar.append(seg);
