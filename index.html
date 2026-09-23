@@ -92,6 +92,10 @@ h1 .logo{width:32px;height:32px;border-radius:10px;background:var(--green);displ
 .tile.pressing{transform:scale(.94)}
 .tile:focus-visible,.tabs button:focus-visible{outline:3px solid var(--stijn);outline-offset:2px}
 .listpanel{background:var(--green-soft);border-radius:20px;padding:4px 12px 14px;margin:0 0 26px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:8px;row-gap:2px}
+.flow .cg{min-width:0}
+.flow .cg .grp{margin:10px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flow .cg .tiles{grid-template-columns:repeat(var(--n),1fr)}
 .listpanel .phead{font-size:18px;font-weight:800;margin:12px 2px 4px;color:var(--ink)}
 .listpanel .empty-note{padding:8px 2px 4px}
 .offhead{font-size:18px;font-weight:800;margin:0 2px 2px}
@@ -438,10 +442,18 @@ function renderShop(){
   if(on.length || !q){
     const panel=document.createElement("div"); panel.className="listpanel";
     const ph=document.createElement("div"); ph.className="phead"; ph.textContent="Op de lijst"+(on.length?" ("+on.length+")":""); panel.append(ph);
-    let cur=null, bucket=[];
-    const flush=()=>{ if(bucket.length){ panel.append(grid(bucket)); bucket=[]; } };
-    on.forEach(it=>{ const c=(CAT[it.category]||CAT.overig); if(c.id!==cur){ flush(); cur=c.id; panel.append(h(c.e+" "+c.n)); } bucket.push(tileEl(it)); });
-    flush();
+    const groups=[];
+    on.forEach(it=>{ const c=(CAT[it.category]||CAT.overig); const g=groups[groups.length-1]; if(g && g.c.id===c.id) g.items.push(it); else groups.push({c,items:[it]}); });
+    if(groups.length){
+      const flow=document.createElement("div"); flow.className="flow";
+      groups.forEach(g=>{
+        const n=Math.min(g.items.length,3);
+        const cg=document.createElement("div"); cg.className="cg"; cg.style.gridColumn="span "+n; cg.style.setProperty("--n",n);
+        cg.append(h(g.c.e+" "+g.c.n), grid(g.items.map(it=>tileEl(it))));
+        flow.append(cg);
+      });
+      panel.append(flow);
+    }
     if(!on.length){ const p=document.createElement("p"); p.className="empty-note"; p.textContent="De lijst is leeg. Typ hierboven wat er gehaald moet worden."; panel.append(p); }
     shopEl.append(panel);
   }
