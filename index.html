@@ -408,7 +408,7 @@ function h(t){ const d=document.createElement("div"); d.className="grp"; d.textC
 /* winkelmodus */
 const STORES={ah:{n:"Albert Heijn",short:"AH"}, dirk:{n:"Dirk",short:"Dirk"}};
 // Schapvolgorde per winkel: vullen we later in. Nu nog de standaardvolgorde.
-const STORE_ORDER={ah:null, dirk:["houdbaar","nonfood","brood","koffie","ontbijt","snacks","zuivel","groente","fruit","kaas","vlees","kruiden","snackszout","drinken","diepvries","overig"]};
+const STORE_ORDER={ah:["fruit","groente","vlees","brood","kaas","zuivel","houdbaar","kruiden","koffie","ontbijt","snacks","nonfood","snackszout","drinken","diepvries","overig"], dirk:["houdbaar","nonfood","brood","koffie","ontbijt","snacks","zuivel","groente","fruit","kaas","vlees","kruiden","snackszout","drinken","diepvries","overig"]};
 let store=null; try{ store=STORES[localStorage.getItem("homey-store")]?localStorage.getItem("homey-store"):null; }catch(e){}
 let wakeLock=null;
 function catIndex(cat, st){ const order=st&&STORE_ORDER[st]; const c=CAT[cat]?cat:"overig"; if(order){ const i=order.indexOf(c); return i<0?999:i; } return CAT[c].i; }
