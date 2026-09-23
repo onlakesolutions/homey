@@ -84,18 +84,18 @@ h1 .logo{width:32px;height:32px;border-radius:10px;background:var(--green);displ
 .tile{position:relative;min-height:92px;border-radius:14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px 6px 8px;cursor:pointer;text-align:center;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:transform .12s}
 .tile .em{font-size:30px;line-height:1}
 .tile .qty{position:absolute;top:6px;right:6px;font-size:11px;padding:1px 6px!important;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--ink);color:var(--paper);max-width:calc(100% - 12px);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.tile.on .qty{background:rgb(var(--t));color:#fff}
+.tile.on .qty{background:#fff;color:var(--green)}
 .tile .sp{font-size:12px;font-weight:500;opacity:.8;line-height:1.1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:100%}
 .tile .nm{font-size:14.5px;font-weight:750;line-height:1.12;letter-spacing:-.01em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;hyphens:auto}
-.tile.on{background:linear-gradient(rgba(var(--t),.2),rgba(var(--t),.2)),var(--paper);border:1.5px solid rgba(var(--t),.55);color:var(--ink)}
+.tile.on{background:var(--green);border-color:var(--green);color:#fff}
 .tile.new{border-style:dashed}
 .tile.pressing{transform:scale(.94)}
 .tile:focus-visible,.tabs button:focus-visible{outline:3px solid var(--stijn);outline-offset:2px}
 .listpanel{background:var(--green-soft);border-radius:20px;padding:4px 12px 14px;margin:0 0 26px}
-.flow{display:grid;grid-template-columns:repeat(3,1fr);column-gap:8px;row-gap:2px}
-.flow .cg{min-width:0}
-.flow .cg .grp{margin:10px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.flow .cg .tiles{grid-template-columns:repeat(var(--n),1fr)}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.flow .cg{min-width:0;background:rgba(var(--t),.16);border:1px solid rgba(var(--t),.4);border-radius:16px;padding:6px}
+.flow .cg .grp{margin:1px 4px 6px;font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flow .cg .tiles{grid-template-columns:repeat(var(--n),1fr);gap:6px}
 .listpanel .phead{font-size:18px;font-weight:800;margin:12px 2px 4px;color:var(--ink)}
 .listpanel .empty-note{padding:8px 2px 4px}
 .offhead{font-size:18px;font-weight:800;margin:0 2px 2px}
@@ -383,7 +383,6 @@ function variantsFor(name){ const ws=name.toLowerCase().split(/[^a-z\u00e0-\u00f
 function tileEl(it, isNew){
   const b=document.createElement("button");
   b.className="tile"+(isNew?" new":it.on_list?" on":"");
-  if(!isNew && it.on_list) b.style.setProperty("--t", TINT[CAT[it.category]?it.category:"overig"]);
   const e=document.createElement("span"); e.className="em"; e.textContent = isNew ? CAT[guessCat(it.name)].e : emojiOf(it);
   const n=document.createElement("span"); n.className="nm"; n.textContent = isNew ? "+ "+it.name : it.name;
   b.append(e,n);
@@ -444,7 +443,18 @@ function renderShop(){
   if(on.length || !q){
     const panel=document.createElement("div"); panel.className="listpanel";
     const ph=document.createElement("div"); ph.className="phead"; ph.textContent="Op de lijst"+(on.length?" ("+on.length+")":""); panel.append(ph);
-    if(on.length) panel.append(grid(on.map(it=>tileEl(it))));
+    const groups=[];
+    on.forEach(it=>{ const c=(CAT[it.category]||CAT.overig); const g=groups[groups.length-1]; if(g && g.c.id===c.id) g.items.push(it); else groups.push({c,items:[it]}); });
+    if(groups.length){
+      const flow=document.createElement("div"); flow.className="flow";
+      groups.forEach(g=>{
+        const n=Math.min(g.items.length,3);
+        const cg=document.createElement("div"); cg.className="cg"; cg.style.gridColumn="span "+n; cg.style.setProperty("--n",n); cg.style.setProperty("--t",TINT[g.c.id]||TINT.overig);
+        cg.append(h(g.c.e+" "+g.c.n), grid(g.items.map(it=>tileEl(it))));
+        flow.append(cg);
+      });
+      panel.append(flow);
+    }
     if(!on.length){ const p=document.createElement("p"); p.className="empty-note"; p.textContent="De lijst is leeg. Typ hierboven wat er gehaald moet worden."; panel.append(p); }
     shopEl.append(panel);
   }
