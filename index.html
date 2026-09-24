@@ -2,7 +2,11 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Homey">
 <title>Homey</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +24,8 @@
 }}
 :root[data-theme="dark"]{--green-soft:#16332a; --bg:#12141a; --paper:#1c1f27; --ink:#f2f4f8; --muted:#9aa2b1; --line:#2c313c; --lot-soft:#4a1c33; --stijn-soft:#1a2a52;}
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);touch-action:manipulation;-webkit-text-size-adjust:100%}
+button,input{touch-action:manipulation}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
 .wrap{max-width:560px;margin:0 auto;padding:20px 16px 110px}
 body.shop .wrap{padding-bottom:190px}
@@ -195,8 +200,8 @@ details.cat .tiles{padding-bottom:14px}
 </div>
 <div class="toast" id="toast" role="status"><span id="tmsg"></span><button id="tundo">Ongedaan maken</button></div>
 <nav class="tabs" id="nav"><div class="search" id="searchbar"><input id="q" placeholder="Wat moet er gehaald worden?" autocomplete="off" enterkeyhint="done" maxlength="60"></div><div class="in" role="tablist">
-  <button role="tab" id="t-auto" aria-selected="true"><span class="ic">🚗</span>Auto</button>
   <button role="tab" id="t-shop" aria-selected="false"><span class="ic">🛒</span>Boodschappen</button>
+  <button role="tab" id="t-auto" aria-selected="true"><span class="ic">🚗</span>Auto</button>
 </div></nav>
 <div class="backdrop" id="bd2">
   <div class="sheet sheet2" role="dialog" aria-modal="true" aria-label="Product bewerken">
@@ -333,7 +338,7 @@ function setTab(t){
 }
 document.getElementById("t-auto").onclick=()=>setTab("auto");
 document.getElementById("t-shop").onclick=()=>setTab("shop");
-try{ setTab(localStorage.getItem("homey-tab")==="shop"?"shop":"auto"); }catch(e){ setTab("auto"); }
+try{ setTab(localStorage.getItem("homey-tab")==="auto"?"auto":"shop"); }catch(e){ setTab("shop"); }
 
 /* ---------- Boodschappen ---------- */
 const CATS=[
