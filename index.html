@@ -128,7 +128,7 @@ h1 .logo{width:32px;height:32px;border-radius:10px;background:var(--green);displ
 .sheet2 .shead span{font-weight:700;font-size:17px}
 .sheet2 .hbtn{font:inherit;font-size:16px;font-weight:600;padding:10px 14px;border-radius:12px;border:0;cursor:pointer;background:transparent;color:var(--muted)}
 .sheet2 .hbtn.save{background:var(--green);color:#fff}
-.sheet2 .sbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 18px calc(28px + env(safe-area-inset-bottom,0px))}
+.sheet2 .sbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 18px 24px}
 .fold{border-top:1px solid var(--line);margin-top:16px}
 .fold summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:13px;font-weight:600;color:var(--muted)}
 .fold summary::-webkit-details-marker{display:none}
@@ -136,6 +136,9 @@ h1 .logo{width:32px;height:32px;border-radius:10px;background:var(--green);displ
 .fold summary .cur::after{content:" \203A";display:inline-block;margin-left:6px;color:var(--muted);transition:transform .15s}
 .fold[open] summary .cur::after{transform:rotate(90deg)}
 .fold .chips,.fold .emojis{padding-bottom:12px}
+.sheet2 .sfoot{flex:0 0 auto;padding:10px 18px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--paper)}
+.sheet2 .klaar{width:100%;font:inherit;font-size:17px;font-weight:700;padding:15px;border-radius:16px;border:0;background:var(--green);color:#fff;cursor:pointer}
+.sheet2 .shead{padding-left:18px;padding-right:18px}
 .sheet2 .delbtn{width:100%;margin-top:24px;font:inherit;font-size:16px;font-weight:600;padding:14px;border-radius:14px;cursor:pointer}
 .primary.green{background:var(--green)}
 .seg{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0 0 16px;font-size:13px;color:var(--muted)}
@@ -212,7 +215,7 @@ details.cat .tiles{padding-bottom:14px}
 </div></nav>
 <div class="backdrop" id="bd2">
   <div class="sheet sheet2" role="dialog" aria-modal="true" aria-label="Product bewerken">
-    <div class="shead"><span id="istate" style="font-weight:600;font-size:14px;color:var(--muted);min-width:90px">Automatisch opgeslagen</span><span>Product</span><button type="button" class="hbtn save" id="isave">Klaar</button></div>
+    <div class="shead"><span>Product</span><span id="istate" style="font-weight:600;font-size:13px;color:var(--muted)">Automatisch opgeslagen</span></div>
     <div class="sbody">
     <input id="iname" maxlength="60" aria-label="Naam">
     <div id="ivarwrap"><div class="lbl">Soort <span style="font-weight:400">(meerdere mogelijk)</span></div><div class="chips" id="ivar"></div></div>
@@ -222,9 +225,10 @@ details.cat .tiles{padding-bottom:14px}
     <div class="lbl">Eigen toevoeging</div>
     <input id="ispec" maxlength="40" placeholder="Bijv. de goedkoopste, of 2 voor 1" aria-label="Eigen toevoeging">
     <details class="fold" id="fcat"><summary><span>Categorie</span><span class="cur" id="ccur"></span></summary><div class="chips" id="icats"></div></details>
-    <details class="fold" id="femo"><summary><span>Emoji</span><span class="cur" id="ecur"></span></summary><div class="emojis" id="iemo"></div></details>
+    <details class="fold" id="femo"><summary><span>Emoji</span><span class="cur" id="ecur"></span></summary><input id="iemoin" maxlength="16" placeholder="Typ of plak een emoji 😀" aria-label="Eigen emoji" style="margin-bottom:10px"><div class="emojis" id="iemo"></div></details>
     <button type="button" class="danger delbtn" id="idel">Verwijder product</button>
     </div>
+    <div class="sfoot"><button type="button" class="klaar" id="isave">Klaar</button></div>
   </div>
 </div>
 
@@ -607,12 +611,13 @@ function drawItemPickers(){
   iemo.innerHTML="";
   const auto=document.createElement("button"); auto.textContent=CAT[selCat].e; auto.title="Categorie-emoji"; auto.setAttribute("aria-label","Geen eigen emoji, gebruik categorie");
   auto.style.opacity=".55"; auto.setAttribute("aria-pressed",!selEmoji); auto.onclick=()=>{selEmoji=null; drawItemPickers();}; iemo.appendChild(auto);
+  if(selEmoji && !EMOJIS.includes(selEmoji)){ const b=document.createElement("button"); b.textContent=selEmoji; b.setAttribute("aria-pressed","true"); iemo.appendChild(b); }
   EMOJIS.forEach(em=>{ const b=document.createElement("button"); b.textContent=em; b.setAttribute("aria-pressed",em===selEmoji); b.onclick=()=>{selEmoji=em; drawItemPickers();}; iemo.appendChild(b); });
 }
 function openItem(id){
   const it=items[id]; if(!it) return;
   editId=id; selCat=CAT[it.category]?it.category:"overig"; selEmoji=it.emoji||null; selVar=it.variant?it.variant.split(", ").filter(Boolean):[]; selQty=it.qty||null; selUnit=it.unit||null; document.getElementById("ispec").value=it.spec||"";
-  document.getElementById("fcat").open=false; document.getElementById("femo").open=false;
+  document.getElementById("fcat").open=false; document.getElementById("femo").open=false; document.getElementById("iemoin").value="";
   iname.value=it.name; drawItemPickers(); drawVariants(it.name); drawQty(); bd2.classList.add("open"); document.getElementById("istate").textContent="Automatisch opgeslagen"; document.body.style.overflow="hidden"; bd2.querySelector(".sbody").scrollTop=0;
 }
 let saveT=null;
@@ -633,6 +638,11 @@ async function persistItem(id){
   else if(editId===id) st.textContent="Opgeslagen \u2713";
 }
 document.getElementById("isave").onclick=()=>closeItem();
+function firstEmoji(t){
+  const segs = window.Intl && Intl.Segmenter ? [...new Intl.Segmenter(undefined,{granularity:"grapheme"}).segment(t)].map(x=>x.segment) : Array.from(t);
+  return segs.find(g=>/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(g)) || null;
+}
+document.getElementById("iemoin").addEventListener("input",e=>{ const em=firstEmoji(e.target.value); if(em){ selEmoji=em; e.target.value=em; e.target.blur(); drawItemPickers(); } });
 bd2.addEventListener("click",e=>{ if(e.target.closest(".sbody") && e.target.closest("button") && e.target.id!=="idel") autosave(); });
 bd2.addEventListener("input",e=>{ if(e.target.closest(".sbody")) autosave(); });
 document.getElementById("idel").onclick=async()=>{
