@@ -129,6 +129,13 @@ h1 .logo{width:32px;height:32px;border-radius:10px;background:var(--green);displ
 .sheet2 .hbtn{font:inherit;font-size:16px;font-weight:600;padding:10px 14px;border-radius:12px;border:0;cursor:pointer;background:transparent;color:var(--muted)}
 .sheet2 .hbtn.save{background:var(--green);color:#fff}
 .sheet2 .sbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 18px calc(28px + env(safe-area-inset-bottom,0px))}
+.fold{border-top:1px solid var(--line);margin-top:16px}
+.fold summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:13px;font-weight:600;color:var(--muted)}
+.fold summary::-webkit-details-marker{display:none}
+.fold summary .cur{font-size:15px;color:var(--ink);font-weight:600}
+.fold summary .cur::after{content:" \203A";display:inline-block;margin-left:6px;color:var(--muted);transition:transform .15s}
+.fold[open] summary .cur::after{transform:rotate(90deg)}
+.fold .chips,.fold .emojis{padding-bottom:12px}
 .sheet2 .delbtn{width:100%;margin-top:24px;font:inherit;font-size:16px;font-weight:600;padding:14px;border-radius:14px;cursor:pointer}
 .primary.green{background:var(--green)}
 .seg{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0 0 16px;font-size:13px;color:var(--muted)}
@@ -214,8 +221,8 @@ details.cat .tiles{padding-bottom:14px}
     <div class="chips" id="iunit"></div>
     <div class="lbl">Eigen toevoeging</div>
     <input id="ispec" maxlength="40" placeholder="Bijv. de goedkoopste, of 2 voor 1" aria-label="Eigen toevoeging">
-    <div class="lbl">Categorie</div><div class="chips" id="icats"></div>
-    <div class="lbl">Emoji</div><div class="emojis" id="iemo"></div>
+    <details class="fold" id="fcat"><summary><span>Categorie</span><span class="cur" id="ccur"></span></summary><div class="chips" id="icats"></div></details>
+    <details class="fold" id="femo"><summary><span>Emoji</span><span class="cur" id="ecur"></span></summary><div class="emojis" id="iemo"></div></details>
     <button type="button" class="danger delbtn" id="idel">Verwijder product</button>
     </div>
   </div>
@@ -593,6 +600,8 @@ function drawVariants(name){
 iname.addEventListener("input",()=>drawVariants(iname.value));
 ["iname","ispec","qval"].forEach(id=>document.getElementById(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); document.getElementById("isave").click(); } }));
 function drawItemPickers(){
+  document.getElementById("ccur").textContent=CAT[selCat].e+" "+CAT[selCat].n;
+  document.getElementById("ecur").textContent=(selEmoji||CAT[selCat].e)+(selEmoji?"":" (standaard)");
   icats.innerHTML="";
   CATS.forEach(c=>{ const b=document.createElement("button"); b.className="chip"; b.textContent=c.e+" "+c.n; b.setAttribute("aria-pressed",c.id===selCat); b.onclick=()=>{selCat=c.id; drawItemPickers();}; icats.appendChild(b); });
   iemo.innerHTML="";
@@ -603,6 +612,7 @@ function drawItemPickers(){
 function openItem(id){
   const it=items[id]; if(!it) return;
   editId=id; selCat=CAT[it.category]?it.category:"overig"; selEmoji=it.emoji||null; selVar=it.variant?it.variant.split(", ").filter(Boolean):[]; selQty=it.qty||null; selUnit=it.unit||null; document.getElementById("ispec").value=it.spec||"";
+  document.getElementById("fcat").open=false; document.getElementById("femo").open=false;
   iname.value=it.name; drawItemPickers(); drawVariants(it.name); drawQty(); bd2.classList.add("open"); document.getElementById("istate").textContent="Automatisch opgeslagen"; document.body.style.overflow="hidden"; bd2.querySelector(".sbody").scrollTop=0;
 }
 let saveT=null;
