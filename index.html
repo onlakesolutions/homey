@@ -91,21 +91,21 @@ h1 .logo{width:32px;height:32px;border-radius:10px;background:var(--green);displ
 .tile.new{border-style:dashed}
 .tile.pressing{transform:scale(.94)}
 .tile:focus-visible,.tabs button:focus-visible{outline:3px solid var(--stijn);outline-offset:2px}
-.listpanel{background:var(--green-soft);border-radius:20px;padding:4px 12px 14px;margin:0 0 26px}
+.listpanel{margin:0 0 22px}
 .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .flow .cg{min-width:0;background:rgba(var(--t),.16);border:1px solid rgba(var(--t),.4);border-radius:16px;padding:6px}
 .flow .cg .grp{margin:1px 4px 6px;font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .flow .cg .tiles{grid-template-columns:repeat(var(--n),1fr);gap:6px}
-.cells{display:grid;grid-template-columns:repeat(3,1fr);margin:6px -4px 0}
-.cell{position:relative;display:flex;flex-direction:column;padding:6px}
-.cell.lab{padding-top:28px}
-.cell::before{content:"";position:absolute;top:var(--it);right:var(--ir);bottom:var(--ib);left:var(--il);background:rgba(var(--t),.22);border-radius:var(--r)}
+.cells{display:grid;grid-template-columns:repeat(3,1fr);margin:6px -3px 0}
+.cell{position:relative;display:flex;flex-direction:column;padding:12px}
+.cell.lab{padding-top:34px}
+.cell::before{content:"";position:absolute;top:var(--it);right:var(--ir);bottom:var(--ib);left:var(--il);background:rgba(var(--t),.24);border-radius:var(--r)}
 .cell>*{position:relative}
 .cell .tile{flex:1}
-.cell .clab{position:absolute;top:9px;left:11px;right:6px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
-.listpanel .phead{font-size:18px;font-weight:800;margin:12px 2px 4px;color:var(--ink)}
+.cell .clab{position:absolute;top:12px;left:16px;right:6px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+.listpanel .phead{font-size:18px;font-weight:800;margin:4px 2px 4px;color:var(--ink)}
 .listpanel .empty-note{padding:8px 2px 4px}
-.offhead{font-size:18px;font-weight:800;margin:0 2px 2px}
+.offhead{font-size:18px;font-weight:800;margin:0 0 2px;padding:20px 2px 0;border-top:1px solid var(--line)}
 .tile:not(.on):not(.new) .em{opacity:.85}
 .empty-note{color:var(--muted);font-size:14px;padding:14px 0}
 .hint{color:var(--muted);font-size:12px;margin-top:18px}
@@ -451,7 +451,7 @@ function renderShop(){
     const panel=document.createElement("div"); panel.className="listpanel";
     const ph=document.createElement("div"); ph.className="phead"; ph.textContent="Op de lijst"+(on.length?" ("+on.length+")":""); panel.append(ph);
     if(on.length){
-      const cats=on.map(it=>CAT[it.category]?it.category:"overig"), n=on.length, G="4px", R="14px";
+      const cats=on.map(it=>CAT[it.category]?it.category:"overig"), n=on.length, G="3px", R="18px";
       const first=i=>i===0||cats[i-1]!==cats[i]||(i%3===0&&!(i>=3&&cats[i-3]===cats[i]));
       const rowLab=r=>[0,1,2].some(c=>{const i=r*3+c; return i<n && first(i);});
       const wrap=document.createElement("div"); wrap.className="cells";
