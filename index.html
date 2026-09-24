@@ -99,7 +99,9 @@ h1 .logo{width:32px;height:32px;border-radius:10px;background:var(--green);displ
 .cells{display:grid;grid-template-columns:repeat(3,1fr);margin:6px -3px 0}
 .cell{position:relative;display:flex;flex-direction:column;padding:12px}
 .cell.lab{padding-top:34px}
-.cell::before{content:"";position:absolute;top:var(--it);right:var(--ir);bottom:var(--ib);left:var(--il);background:rgba(var(--t),.24);border-radius:var(--r)}
+.cell::before{content:"";position:absolute;top:var(--it);right:var(--ir);bottom:var(--ib);left:var(--il);background:var(--shell);border-radius:var(--r)}
+.cell{--shell:rgba(var(--t),.13)}
+.cell .fil{position:absolute;width:6px;height:6px;pointer-events:none}
 .cell>*{position:relative}
 .cell .tile{flex:1}
 .cell .clab{position:absolute;top:12px;left:16px;right:6px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
@@ -463,6 +465,19 @@ function renderShop(){
         cell.style.setProperty("--il",L?"0":G); cell.style.setProperty("--ir",Rt?"0":G);
         cell.style.setProperty("--it",U?"0":G); cell.style.setProperty("--ib",D?"0":G);
         cell.style.setProperty("--r",[(!U&&!L)?R:"0",(!U&&!Rt)?R:"0",(!D&&!Rt)?R:"0",(!D&&!L)?R:"0"].join(" "));
+        const same=j=>j>=0&&j<n&&cats[j]===k;
+        const UL=c>0&&same(i-4), UR=c<2&&same(i-2), DL=c>0&&same(i+2), DR=c<2&&same(i+4);
+        const fils=[];
+        if(L&&!U&&UL) fils.push({left:"0",top:"-3px",at:"100% 0"});
+        if(Rt&&!U&&UR) fils.push({right:"0",top:"-3px",at:"0 0"});
+        if(L&&!D&&DL) fils.push({left:"0",bottom:"-3px",at:"100% 100%"});
+        if(Rt&&!D&&DR) fils.push({right:"0",bottom:"-3px",at:"0 100%"});
+        if(U&&!L&&UL) fils.push({left:"-3px",top:"0",at:"0 100%"});
+        if(U&&!Rt&&UR) fils.push({right:"-3px",top:"0",at:"100% 100%"});
+        if(D&&!L&&DL) fils.push({left:"-3px",bottom:"0",at:"0 0"});
+        if(D&&!Rt&&DR) fils.push({right:"-3px",bottom:"0",at:"100% 0"});
+        fils.forEach(f=>{ const e=document.createElement("div"); e.className="fil"; ["left","right","top","bottom"].forEach(k2=>{ if(f[k2]!=null) e.style[k2]=f[k2]; });
+          e.style.background="radial-gradient(circle 6px at "+f.at+", transparent 5.5px, var(--shell) 6px)"; cell.append(e); });
         if(first(i)){ const lb=document.createElement("div"); lb.className="clab"; lb.textContent=CAT[k].e+" "+CAT[k].n; cell.append(lb); }
         cell.append(tileEl(it));
         wrap.append(cell);
