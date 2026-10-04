@@ -7,6 +7,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Homey">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+<meta name="theme-color" content="#12966a">
 <title>Homey</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -500,7 +503,7 @@ function renderShop(){
       });
       panel.append(wrap);
     }
-    if(!on.length){ const p=document.createElement("p"); p.className="empty-note"; p.textContent="De lijst is leeg. Typ hierboven wat er gehaald moet worden."; panel.append(p); }
+    if(!on.length){ const p=document.createElement("p"); p.className="empty-note"; p.textContent="De lijst is leeg. Typ hieronder wat er gehaald moet worden."; panel.append(p); }
     shopEl.append(panel);
   }
   if(q){ if(off.length) shopEl.append(h("Gevonden"), grid(off.sort(byName).map(it=>tileEl(it)))); return; }
