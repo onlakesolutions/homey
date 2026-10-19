@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#eef1f6; --paper:#ffffff; --ink:#15171c; --muted:#6b7280; --line:#dde2ea;
+  --bg:#f5efe6; --paper:#fffdf9; --ink:#1c1915; --muted:#7a7166; --line:#e7ddcf;
   --green:#12966a; --green-soft:#e2f3eb; --lot:#ff4f9a; --lot-soft:#ffe0ee; --stijn:#2f6bff; --stijn-soft:#dbe6ff;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
@@ -805,7 +805,7 @@ fDefaults(); drawForm(); renderFin();
 window.addEventListener("hashchange",()=>{ if(!fEdit){ fPayer=me||"stijn"; drawForm(); } });
 
 /* ---------- automatisch updaten ---------- */
-const APP_VERSION="20261019-2";
+const APP_VERSION="20261019-3";
 function checkVersion(){
   fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(v=>{
     v=(v||"").trim(); if(!v || v===APP_VERSION) return;
