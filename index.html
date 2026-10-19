@@ -178,7 +178,37 @@ details.cat .tiles{padding-bottom:14px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 10px 10px 16px;border-radius:14px;display:none;gap:12px;align-items:center;z-index:20;font-size:15px;max-width:calc(100% - 32px)}
 .toast.show{display:flex}
 .toast button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--green);cursor:pointer;padding:6px 8px}
-</style>
+.fcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:12px}
+.fmuted{font-size:13px;color:var(--muted);font-weight:600}
+.fbal{font-size:22px;font-weight:800;margin:4px 0 12px;line-height:1.2}
+.fbal .lot{color:var(--lot)}.fbal .stijn{color:var(--stijn)}
+.fbtn{width:100%;font:inherit;font-weight:600;font-size:15px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.fhead{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:17px;margin-bottom:10px}
+.flink{font:inherit;font-size:14px;font-weight:600;border:0;background:transparent;color:var(--muted);cursor:pointer;padding:4px}
+.frow2{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px}
+.frow2 input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.flbl{font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 8px}
+.fseg{display:flex;gap:6px}
+.fseg button{flex:1;font:inherit;font-size:14px;font-weight:600;padding:10px 6px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.fseg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.fseg button.lot[aria-pressed="true"]{background:var(--lot);border-color:var(--lot);color:#fff}
+.fseg button.stijn[aria-pressed="true"]{background:var(--stijn);border-color:var(--stijn);color:#fff}
+.fsplit{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin:14px 2px 6px}
+#frange{width:100%}
+.ferr{color:#e11d2e;font-size:14px;margin-top:10px}
+.fadd{width:100%;margin-top:14px;font:inherit;font-size:16px;font-weight:700;padding:14px;border-radius:14px;border:0;background:var(--green);color:#fff;cursor:pointer}
+.fdel{width:100%;margin-top:8px;font:inherit;font-size:15px;font-weight:600;padding:12px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.flist{padding:0;overflow:hidden}
+.frow{display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;border-bottom:1px solid var(--line);cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;background:transparent}
+.frow:last-child{border-bottom:0}
+.frow.old{opacity:.55}
+.fav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex:0 0 auto}
+.fav.lot{background:var(--lot)}.fav.stijn{background:var(--stijn)}
+.fmid{flex:1;min-width:0}.fmid .d{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fmid .m{font-size:12px;color:var(--muted)}
+.fright{text-align:right}.fright .a{font-size:15px;font-weight:700}.fright .o{font-size:12px;font-weight:600}
+.fright .o.lot{color:var(--lot)}.fright .o.stijn{color:var(--stijn)}
+.fdiv{padding:10px 14px;font-size:12px;color:var(--muted);text-align:center;border-bottom:1px solid var(--line);background:var(--bg)}
+.fempty{padding:16px 14px;color:var(--muted);font-size:14px}
 </style>
 </head>
 <body>
@@ -199,6 +229,31 @@ details.cat .tiles{padding-bottom:14px}
   <div class="legend"><span style="--c:var(--stijn)">Stijn</span><span style="--c:var(--lot)">Lot</span></div>
   <div class="status" id="status">Verbinden...</div>
   </section>
+  <section id="tab-fin" hidden>
+    <h2 class="section-title">Financiën</h2>
+    <div class="fcard">
+      <div class="fmuted">Balans</div>
+      <div class="fbal" id="fbal">Laden...</div>
+      <button type="button" class="fbtn" id="fsettle">Verrekend, zet op nul</button>
+    </div>
+    <div class="fcard" id="fform">
+      <div class="fhead"><span id="ftitle">Nieuwe boeking</span><button type="button" class="flink" id="fcancel" hidden>Annuleer</button></div>
+      <div class="frow2"><input id="fdesc" maxlength="80" placeholder="Omschrijving, bijv. Dirk" autocomplete="off"><input id="famt" inputmode="decimal" placeholder="€ 0,00" autocomplete="off" style="text-align:right"></div>
+      <div class="flbl">Betaald door</div>
+      <div class="fseg" id="fpayer"></div>
+      <div class="flbl">Verdeling</div>
+      <div class="fseg" id="fmode"></div>
+      <div id="fcustom" hidden>
+        <div class="fsplit"><span id="fsl"></span><span id="fsr"></span></div>
+        <input type="range" id="frange" min="0" max="100" step="5" value="70" aria-label="Verdeling">
+      </div>
+      <div class="ferr" id="ferr" hidden></div>
+      <button type="button" class="fadd" id="fsave">Toevoegen</button>
+      <button type="button" class="fdel" id="fdel" hidden>Verwijder boeking</button>
+    </div>
+    <div class="grp" style="margin:18px 2px 6px">Boekingen</div>
+    <div class="fcard flist" id="flist"></div>
+  </section>
   <section id="tab-shop" hidden>
     <h2 class="section-title">Boodschappen</h2>
     <div id="shopbar"></div>
@@ -215,6 +270,7 @@ details.cat .tiles{padding-bottom:14px}
 <nav class="tabs" id="nav"><div class="search" id="searchbar"><input id="q" placeholder="Wat moet er gehaald worden?" autocomplete="off" enterkeyhint="done" maxlength="60"></div><div class="in" role="tablist">
   <button role="tab" id="t-shop" aria-selected="false"><span class="ic">🛒</span>Boodschappen</button>
   <button role="tab" id="t-auto" aria-selected="true"><span class="ic">🚗</span>Auto</button>
+  <button role="tab" id="t-fin" aria-selected="false"><span class="ic">💶</span>Financiën</button>
 </div></nav>
 <div class="backdrop" id="bd2">
   <div class="sheet sheet2" role="dialog" aria-modal="true" aria-label="Product bewerken">
@@ -345,6 +401,8 @@ render();
 function setTab(t){
   document.getElementById("tab-auto").hidden = t!=="auto";
   document.getElementById("tab-shop").hidden = t!=="shop";
+  document.getElementById("tab-fin").hidden = t!=="fin";
+  document.getElementById("t-fin").setAttribute("aria-selected", t==="fin");
   document.getElementById("t-auto").setAttribute("aria-selected", t==="auto");
   document.getElementById("t-shop").setAttribute("aria-selected", t==="shop");
   document.getElementById("nav").classList.toggle("auto", t!=="shop"); document.body.classList.toggle("shop", t==="shop");
@@ -352,7 +410,8 @@ function setTab(t){
 }
 document.getElementById("t-auto").onclick=()=>setTab("auto");
 document.getElementById("t-shop").onclick=()=>setTab("shop");
-try{ setTab(localStorage.getItem("homey-tab")==="auto"?"auto":"shop"); }catch(e){ setTab("shop"); }
+document.getElementById("t-fin").onclick=()=>setTab("fin");
+try{ const lt=localStorage.getItem("homey-tab"); setTab(lt==="auto"||lt==="fin"?lt:"shop"); }catch(e){ setTab("shop"); }
 
 /* ---------- Boodschappen ---------- */
 const CATS=[
@@ -657,6 +716,94 @@ document.getElementById("idel").onclick=async()=>{
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeItem(); });
 renderShop();
 
+/* ---------- Financien ---------- */
+const exps={};
+const OTHER={lot:"stijn",stijn:"lot"};
+const eur=c=>"\u20ac"+(c/100).toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2});
+let fPayer=null, fMode="50", fPct=70, fEdit=null;
+function fDefaults(){ fPayer=me||"stijn"; fMode="50"; fPct=70; fEdit=null; document.getElementById("fdesc").value=""; document.getElementById("famt").value=""; }
+const owed=e=>Math.round(e.amount_cents*(100-e.payer_pct)/100);
+function fDate(iso){ try{ return new Date(iso).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"}); }catch(e){ return ""; } }
+function splitText(e){ if(e.payer_pct===50) return "50/50"; if(e.payer_pct===0) return "Alles voor "+PEOPLE[OTHER[e.paid_by]]; return PEOPLE[e.paid_by]+" "+e.payer_pct+"%, "+PEOPLE[OTHER[e.paid_by]]+" "+(100-e.payer_pct)+"%"; }
+function drawForm(){
+  const pay=document.getElementById("fpayer"); pay.innerHTML="";
+  ["stijn","lot"].forEach(w=>{ const b=document.createElement("button"); b.type="button"; b.className=w; b.textContent=PEOPLE[w]; b.setAttribute("aria-pressed",fPayer===w); b.onclick=()=>{fPayer=w; drawForm();}; pay.append(b); });
+  const md=document.getElementById("fmode"); md.innerHTML="";
+  [["50","50/50"],["all","Alles voor "+PEOPLE[OTHER[fPayer]]],["custom","Anders"]].forEach(([k,l])=>{ const b=document.createElement("button"); b.type="button"; b.textContent=l; b.setAttribute("aria-pressed",fMode===k); b.onclick=()=>{fMode=k; drawForm();}; md.append(b); });
+  document.getElementById("fcustom").hidden = fMode!=="custom";
+  document.getElementById("frange").value=fPct;
+  document.getElementById("fsl").textContent=PEOPLE[fPayer]+" "+fPct+"%";
+  document.getElementById("fsr").textContent=PEOPLE[OTHER[fPayer]]+" "+(100-fPct)+"%";
+  document.getElementById("ftitle").textContent=fEdit?"Boeking bewerken":"Nieuwe boeking";
+  document.getElementById("fsave").textContent=fEdit?"Opslaan":"Toevoegen";
+  document.getElementById("fdel").hidden=!fEdit; document.getElementById("fcancel").hidden=!fEdit;
+}
+document.getElementById("frange").addEventListener("input",e=>{ fPct=parseInt(e.target.value,10); drawForm(); });
+function renderFin(){
+  const all=Object.values(exps);
+  const open=all.filter(e=>!e.settled_at).sort((a,b)=>b.created_at.localeCompare(a.created_at));
+  const done=all.filter(e=>e.settled_at).sort((a,b)=>b.created_at.localeCompare(a.created_at)).slice(0,40);
+  let net=0; open.forEach(e=>{ net += e.paid_by==="stijn" ? owed(e) : -owed(e); });
+  const bal=document.getElementById("fbal"); bal.innerHTML="";
+  if(Math.abs(net)<1){ bal.textContent="Jullie staan quitte"; }
+  else { const cred=net>0?"stijn":"lot"; const n=document.createElement("span"); n.className=cred; n.textContent=eur(Math.abs(net));
+    bal.append(PEOPLE[cred]+" krijgt ", n, " van "+PEOPLE[OTHER[cred]]); }
+  document.getElementById("fsettle").hidden=!open.length;
+  const list=document.getElementById("flist"); list.innerHTML="";
+  const row=e=>{ const b=document.createElement("button"); b.type="button"; b.className="frow"+(e.settled_at?" old":"");
+    const av=document.createElement("div"); av.className="fav "+e.paid_by; av.textContent=PEOPLE[e.paid_by][0];
+    const mid=document.createElement("div"); mid.className="fmid"; const d=document.createElement("div"); d.className="d"; d.textContent=e.description||"Zonder omschrijving"; const m=document.createElement("div"); m.className="m"; m.textContent=splitText(e)+", "+fDate(e.created_at); mid.append(d,m);
+    const r=document.createElement("div"); r.className="fright"; const a=document.createElement("div"); a.className="a"; a.textContent=eur(e.amount_cents); r.append(a);
+    if(owed(e)>0){ const o=document.createElement("div"); o.className="o "+e.paid_by; o.textContent="+"+eur(owed(e)); r.append(o); }
+    b.append(av,mid,r); b.onclick=()=>editExp(e.id); return b; };
+  open.forEach(e=>list.append(row(e)));
+  if(!open.length){ const p=document.createElement("div"); p.className="fempty"; p.textContent="Nog niks open. Voeg hierboven een boeking toe."; list.append(p); }
+  if(done.length){ const last=done.reduce((m,e)=>e.settled_at>m?e.settled_at:m,""); const dv=document.createElement("div"); dv.className="fdiv"; dv.textContent="Verrekend op "+fDate(last); list.append(dv); done.forEach(e=>list.append(row(e))); }
+}
+function editExp(id){
+  const e=exps[id]; if(!e) return;
+  fEdit=id; fPayer=e.paid_by; document.getElementById("fdesc").value=e.description||""; document.getElementById("famt").value=(e.amount_cents/100).toFixed(2).replace(".",",");
+  if(e.payer_pct===50) fMode="50"; else if(e.payer_pct===0) fMode="all"; else { fMode="custom"; fPct=e.payer_pct; }
+  document.getElementById("ferr").hidden=true; drawForm();
+  document.getElementById("fform").scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.getElementById("fcancel").onclick=()=>{ fDefaults(); document.getElementById("ferr").hidden=true; drawForm(); };
+function fErr(t){ const el=document.getElementById("ferr"); el.textContent=t; el.hidden=false; }
+["fdesc","famt"].forEach(id=>document.getElementById(id).addEventListener("input",()=>document.getElementById("ferr").hidden=true));
+document.getElementById("famt").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); document.getElementById("fsave").click(); } });
+document.getElementById("fsave").onclick=async()=>{
+  let raw=document.getElementById("famt").value.replace(/[^\d,.]/g,"");
+  if(raw.includes(",")) raw=raw.replace(/\./g,"").replace(",",".");
+  const cents=Math.round(parseFloat(raw)*100);
+  if(!(cents>0)) return fErr("Vul een bedrag in, bijv. 12,50");
+  const row={description:document.getElementById("fdesc").value.trim(), amount_cents:cents, paid_by:fPayer, payer_pct: fMode==="50"?50: fMode==="all"?0: fPct};
+  if(!sb) return fErr("Niet verbonden, probeer het opnieuw.");
+  let r;
+  if(fEdit){ Object.assign(exps[fEdit],row); r=await sb.from("expenses").update(row).eq("id",fEdit); }
+  else { const id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())); exps[id]={id,...row,created_at:new Date().toISOString(),settled_at:null}; r=await sb.from("expenses").insert({id,...row}); }
+  if(r.error){ fErr("Opslaan mislukt, probeer het opnieuw."); loadFin(); return; }
+  fDefaults(); drawForm(); renderFin(); if(document.activeElement) document.activeElement.blur();
+};
+document.getElementById("fdel").onclick=async()=>{
+  if(!fEdit || !confirm("Deze boeking verwijderen?")) return;
+  const id=fEdit; delete exps[id]; fDefaults(); drawForm(); renderFin();
+  if(sb){ const r=await sb.from("expenses").delete().eq("id",id); if(r.error) loadFin(); }
+};
+document.getElementById("fsettle").onclick=async()=>{
+  if(!confirm("Is alles verrekend? De balans gaat dan op nul.")) return;
+  const now=new Date().toISOString(); const ids=Object.values(exps).filter(e=>!e.settled_at).map(e=>e.id);
+  ids.forEach(id=>exps[id].settled_at=now); renderFin();
+  if(sb && ids.length){ const r=await sb.from("expenses").update({settled_at:now}).in("id",ids); if(r.error){ fErr("Verrekenen mislukt."); loadFin(); } }
+};
+async function loadFin(){
+  if(!sb) return;
+  const {data,error}=await sb.from("expenses").select("id,description,amount_cents,paid_by,payer_pct,created_at,settled_at").order("created_at",{ascending:false}).limit(300);
+  if(error) return;
+  for(const k in exps) delete exps[k]; data.forEach(r=>exps[r.id]=r); renderFin();
+}
+fDefaults(); drawForm(); renderFin();
+window.addEventListener("hashchange",()=>{ if(!fEdit){ fPayer=me||"stijn"; drawForm(); } });
+
 const SB_URL="https://qzlzoyvtdvyilvawwazu.supabase.co";
 const SB_KEY="sb_publishable_ujQvTwOmyL_PEg64jePTBQ_PPf__hVB";
 let sb=null;
@@ -676,10 +823,11 @@ async function loadItems(){
 }
 try{
   sb=supabase.createClient(SB_URL,SB_KEY);
-  load(); loadItems();
+  load(); loadItems(); loadFin();
   sb.channel("homey").on("postgres_changes",{event:"*",schema:"public",table:"days"},load)
-    .on("postgres_changes",{event:"*",schema:"public",table:"items"},loadItems).subscribe();
-  document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ load(); loadItems(); } });
+    .on("postgres_changes",{event:"*",schema:"public",table:"items"},loadItems)
+    .on("postgres_changes",{event:"*",schema:"public",table:"expenses"},loadFin).subscribe();
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ load(); loadItems(); loadFin(); } });
 }catch(e){ setStatus("Kan geen verbinding maken."); }
 </script>
 </body>
