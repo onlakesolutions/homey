@@ -804,6 +804,18 @@ async function loadFin(){
 fDefaults(); drawForm(); renderFin();
 window.addEventListener("hashchange",()=>{ if(!fEdit){ fPayer=me||"stijn"; drawForm(); } });
 
+/* ---------- automatisch updaten ---------- */
+const APP_VERSION="20261019-2";
+function checkVersion(){
+  fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(v=>{
+    v=(v||"").trim(); if(!v || v===APP_VERSION) return;
+    if(new URLSearchParams(location.search).get("v")===v) return;
+    location.replace(location.pathname+"?v="+encodeURIComponent(v)+location.hash);
+  }).catch(()=>{});
+}
+checkVersion();
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkVersion(); });
+
 const SB_URL="https://qzlzoyvtdvyilvawwazu.supabase.co";
 const SB_KEY="sb_publishable_ujQvTwOmyL_PEg64jePTBQ_PPf__hVB";
 let sb=null;
